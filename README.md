@@ -35,6 +35,8 @@ Access token acquired:
 eyJ0eXAiOiJKV1... [TOKEN OUTPUT REMOVED]
 ```
 
+You can pipe the output directly to a file that you can reference in the ```image_feed.py``` script below.
+
 ## Getting messages and images from a community feed
 ### `image_feed.py`
 
@@ -88,6 +90,27 @@ Image saved to downloaded_url-2315560452096-image.png.png.
 
 ### Failed to retrieve data: 401 (Expired signature for Tokie JWT)
 This error indicates that your token has expired. Getting a new token with ```acquire_msal_token.py``` should resolve this issue.
+
+### Problems with accessing Viva Engage files
+Test with an HTTP client like Postman or Fiddler. Modify the following HTTP request to include your file and a valid Entra token:
+```
+GET https://www.yammer.com/api/v1/uploaded_files/[REPLACE WITH FILE ID]/version/[REPLACE WITH FILE VERSION ID]/large_preview/ HTTP/1.1
+accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
+accept-language: "en-US,en;q=0.9"
+cache-control: "no-cache"
+pragma: "no-cache"
+priority: "u=0, i"
+sec-ch-ua: "\"Microsoft Edge\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
+sec-ch-ua-mobile: "?0"
+sec-ch-ua-platform: "\"Windows\""
+sec-fetch-dest: "document"
+sec-fetch-mode: "navigate"
+sec-fetch-site: "none"
+sec-fetch-user: "?1"
+upgrade-insecure-requests: "1"
+
+Authorization: "Bearer [REPLACE WITH ENTRA TOKEN]"
+```
 
 ## License
 This project is licensed under the MIT License.
