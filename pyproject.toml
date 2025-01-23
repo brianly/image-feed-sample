@@ -1,0 +1,10 @@
+[project]
+name = "FeedJuggler"
+version = "0.1.0"
+description = "Captures, filters, and converts a Viva Engage feed to another format."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "msal>=1.31.1",
+    "requests>=2.32.3",
+]
