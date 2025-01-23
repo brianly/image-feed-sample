@@ -46,7 +46,7 @@ Calls are made to the ```messages/in_group/GROUP_ID.json``` endpoint, but the co
 
 #### Usage
 ```powershell
-uv run .\src\feedjuggler.py 202092797952 token.txt
+uv run .\src\image_feed.py 202092797952 token.txt
 ```
 #### Example
 ```powershell
