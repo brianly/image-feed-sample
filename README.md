@@ -5,6 +5,11 @@ This project demonstrates how to call the Viva Engage (Yammer) API with an Entra
 
 Python 3.13.1 on Windows was used for the creation of this script, but it'll run on macOS and Linux just as well. [Requests](https://pypi.org/project/requests/) and [MSAL](https://pypi.org/project/msal/) are required for making API requests. Using [uv](https://docs.astral.sh/uv/) is recommended for easy setup and execution, but ```pip``` should work just fine.
 
+### Project updates
+- 2025-02-03: Improvements including specifying directory for image downloads.
+- 2025-01-23: First release demonstrating API usage.
+
+
 ## Getting started
 
 Get familiar with Entra authentication and tokens by reviewing the [Yammer API with AAD tokens Postman Collection](https://techcommunity.microsoft.com/blog/viva_engage_blog/yammer-api-with-aad-tokens-postman-collection/857923) blog post and testing in Postman. Any HTTP client will work, but you'll have extract the endpoints from the downloadable collection on the blog. 
@@ -48,23 +53,23 @@ Calls are made to the ```messages/in_group/GROUP_ID.json``` endpoint, but the co
 
 #### Usage
 ```powershell
-uv run .\src\image_feed.py 202092797952 token.txt
+uv run .\src\image_feed.py 202092797952 .\token.txt .\temp\
 ```
 #### Example
 ```powershell
-uv run .\src\image_feed.py 202092797952 token.txt
+uv run .\src\image_feed.py 202092797952 .\token.txt .\temp\
 Using these arguments...
 Community ID: 202092797952
-Token Path: token2.txt
-Entered main()...
-token2.txt
+Token Path: .\token.txt
+Image Save Path: .\temp\
 Excerpt: unique image
 Content type: image/png
 large_preview_url: https://www.yammer.com/api/v1/uploaded_files/2315560452096/version/2339394756608/large_preview/
-Image saved to 2315560452096-image.png.png.
+Image saved to temp\2315560452096-image.png.png.
 download_url: https://www.yammer.com/api/v1/uploaded_files/2315560452096/download
-Image saved to downloaded_url-2315560452096-image.png.png.
+Image saved to temp\downloaded_url-2315560452096-image.png.png.
 ```
+
 #### Tips
 
 - Get a community ID by navigating to an Engage community on the web, copying the URL, and decoding it with a base64 decoder.
@@ -86,6 +91,8 @@ Image saved to downloaded_url-2315560452096-image.png.png.
     ]
 }
 ```
+- In production scenarios, run the script using tokens associated with a normal user account without admin privileges.
+
 ## Troubleshooting
 
 ### Failed to retrieve data: 401 (Expired signature for Tokie JWT)
@@ -111,6 +118,18 @@ upgrade-insecure-requests: "1"
 
 Authorization: "Bearer [REPLACE WITH ENTRA TOKEN]"
 ```
+
+### Failed to retrieve data: 401 (Fail to find Yammer Oauth token)
+
+Indicates that the token is invalid. Check that the file with the token contains a valid token and is readable by the script. While this error references a Yammer OAuth token you must use an Entra token with the Yammer permission to access the APIs required by this script.
+
+### Failed to retrieve data: 404
+
+This is likely caused by the use of a community ID which is inaccessible to the user. Double-check the community ID is valid by visiting the community via the web with the user that is associated with the token.
+
+### Failed to save image: [Errno 2] No such file or directory: 'tempsdfds\\2315560452096-image.png.png'
+
+Errors like this result from an invalid ```image_save_path``` path passed to the script. Make sure the directory exists and is writable.
 
 ## License
 This project is licensed under the MIT License.

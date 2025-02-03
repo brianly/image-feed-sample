@@ -1,4 +1,6 @@
 import argparse
+from pathlib import Path
+
 import requests
 
 
@@ -17,7 +19,6 @@ def read_text(file_path) -> str:
         Prints an error message if the file is not found, permission is denied,
         the file is not in a valid Unicode format, or any other exception occurs.
     """
-    print(file_path)
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             return file.read()
@@ -94,7 +95,7 @@ def engage_file_download(url, token):
     return None
 
 
-def save_image_to_disk(image_data, file_path):
+def save_image_to_disk(image_data, file_name, save_path):
     """
     Saves binary image data to disk.
 
@@ -103,16 +104,15 @@ def save_image_to_disk(image_data, file_path):
         file_path (str): The path where the image will be saved.
     """
     try:
-        with open(file_path, "wb") as file:
+        path = Path(save_path) / file_name
+        with open(path, "wb") as file:
             file.write(image_data)
-        print(f"Image saved to {file_path}.")
+        print(f"Image saved to {path}.")
     except Exception as e:
         print(f"Failed to save image: {e}")
 
 
 def main(params) -> int:
-    print("Entered main()...")
-
     if params.community_id is not None:
         token = read_text(params.token_path)
 
@@ -148,17 +148,23 @@ def main(params) -> int:
                                 print(f"Content type: {attachment["content_type"]}")
 
                                 # Option 1: Use the large preview. May not be high enough resolution.
-                                print(f"large_preview_url: {attachment["large_preview_url"]}")
+                                print(
+                                    f"large_preview_url: {attachment["large_preview_url"]}"
+                                )
 
                                 large_preview = engage_file_download(
                                     attachment["large_preview_url"], token
                                 )
 
-                                save_path = (
+                                image_file_name = (
                                     f'{attachment["id"]}-{attachment["name"]}.png'
                                 )
 
-                                save_image_to_disk(large_preview, save_path)
+                                save_image_to_disk(
+                                    large_preview,
+                                    image_file_name,
+                                    params.image_save_path,
+                                )
 
                                 # Option 2: Get the original file. Higher resolution.
                                 print(f"download_url: {attachment["download_url"]}")
@@ -167,9 +173,13 @@ def main(params) -> int:
                                     attachment["download_url"], token
                                 )
 
-                                save_path = f'downloaded_url-{attachment["id"]}-{attachment["name"]}.png'
+                                image_file_name = f'downloaded_url-{attachment["id"]}-{attachment["name"]}.png'
 
-                                save_image_to_disk(full_download, save_path)
+                                save_image_to_disk(
+                                    full_download,
+                                    image_file_name,
+                                    params.image_save_path,
+                                )
 
             else:
                 print(
@@ -185,13 +195,26 @@ def main(params) -> int:
 
 if __name__ == "__main__":
 
-    # Handle command line arguments
-    parser = argparse.ArgumentParser(description="Fetches a feed of messages with images from a Viva Engage community.")
-    parser.add_argument("community_id", type=str, help="Community ID ")
+    parser = argparse.ArgumentParser(
+        description="Fetches a feed of messages with images from a Viva Engage community."
+    )
+
+    parser.add_argument(
+        "community_id",
+        type=str,
+        help="Community ID in integer format. Use a Base64 decoder to get the ID from a community URL.",
+    )
+
     parser.add_argument(
         "token_path",
         type=str,
         help="Path to an Entra token which has been authorized for the Yammer (Viva Engage) API.",
+    )
+
+    parser.add_argument(
+        "image_save_path",
+        type=str,
+        help="Path where downloaded images will be saved.",
     )
 
     args = parser.parse_args()
@@ -199,5 +222,6 @@ if __name__ == "__main__":
     print("Using these arguments...")
     print(f"Community ID: {args.community_id}")
     print(f"Token Path: {args.token_path}")
+    print(f"Image Save Path: {args.image_save_path}")
 
     main(args)
