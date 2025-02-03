@@ -9,4 +9,9 @@ wheels/
 # Virtual environments
 .venv
 token.txt
+
+# Custom launch configuration for VSCode
 .vscode/launch.json
+
+# Temp directory for testing
+temp/
