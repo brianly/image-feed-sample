@@ -3,7 +3,7 @@
 ## Overview
 This project demonstrates how to call the Viva Engage (Yammer) API with an Entra token, iterate over messages in a community, and output only those messages with image attachments. It will also download and save copies of the attached images in the current directory. It is written with [MSAL](https://learn.microsoft.com/en-us/entra/identity-platform/msal-overview) which means it is relatively easy to translate to languages other than Python.
 
-Python 3.13.1 on Windows was used for the creation of this script, but it'll run on macOS and Linux just as well. [Requests](https://pypi.org/project/requests/) and [MSAL](https://pypi.org/project/msal/) are required for making API requests. Using [uv](https://docs.astral.sh/uv/) is recommended for easy setup and execution, but ```pip``` should work just fine.
+Python 3.13.1 on Windows was used for the creation of this script, but it'll run on macOS and Linux just as well. [Requests](https://pypi.org/project/requests/) and [MSAL](https://pypi.org/project/msal/) are required for making API requests. Using [uv](https://docs.astral.sh/uv/) is recommended for easy setup and execution, but ```pip``` works too.
 
 ### Project updates
 - 2025-02-03: Improvements including specifying directory for image downloads.
